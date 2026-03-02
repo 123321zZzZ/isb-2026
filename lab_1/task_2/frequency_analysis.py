@@ -7,9 +7,7 @@
 import os
 from collections import Counter
 
-from config import FREQ
-
-CIPHER_FILE = 'cod11.txt'
+from config import FREQ, CIPHER_FILE
 
 
 def read_cipher_text(file_path: str) -> str:

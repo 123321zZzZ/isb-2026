@@ -5,8 +5,8 @@
 
 import os
 
+from config import KEY_FILE, CIPHER_FILE, RESULTS_DIR
 
-KEY_FILE = 'key.txt'
 
 def read_key(key_file: str) -> dict[str, str]:
     """Читает файл с ключом и создаёт словарь подстановки.
@@ -33,36 +33,54 @@ def read_key(key_file: str) -> dict[str, str]:
         substitution[cipher] = plain
     return substitution
 
-key=read_key(KEY_FILE)
+def decrypt_text(text: str, key: dict[str, str]) -> str:
+    """Расшифровывает текст с использованием ключа.
 
-# Читаем зашифрованный текст
-with open('cod11.txt', 'r', encoding='utf-8') as f:
-    encrypted = f.read()
+    Args:
+        text (str): Зашифрованный текст.
+        key (dict[str, str]): Словарь расшифровки.
 
-# Расшифровываем
-decrypted = ""
-for c in encrypted:
-    if c in key:
-        decrypted += key[c]
-    else:
-        decrypted += c
-
-# Выводим результат
-print("=" * 40)
-print("РАСШИФРОВАННЫЙ ТЕКСТ:")
-print("=" * 40)
-print(decrypted)
-print("=" * 40)
-
-# Создаём папку results
-if not os.path.exists('results'):
-    os.makedirs('results')
-
-# Сохраняем в папку results
-with open('results/decrypted.txt', 'w', encoding='utf-8') as f:
-    f.write(decrypted)
+    Returns:
+        str: Расшифрованный текст.
+    """
+    decrypted = ""
+    for c in text:
+        if c in key:
+            decrypted += key[c]
+        else:
+            decrypted += c
+    return decrypted
 
 
+def main() -> None:
+    """Основная функция."""
+    key = read_key(KEY_FILE)
 
-print()
-print("Сохранено в results/decrypted.txt ")
+    # Читаем зашифрованный текст
+    with open(CIPHER_FILE, 'r', encoding='utf-8') as f:
+        encrypted = f.read()
+
+    # Расшифровываем
+    decrypted = decrypt_text(encrypted, key)
+
+    # Выводим результат
+    print("=" * 40)
+    print("РАСШИФРОВАННЫЙ ТЕКСТ:")
+    print("=" * 40)
+    print(decrypted)
+    print("=" * 40)
+
+    # Создаём папку results
+    if not os.path.exists(RESULTS_DIR):
+        os.makedirs(RESULTS_DIR)
+
+    # Сохраняем в папку results
+    with open(RESULTS_DIR + '/decrypted.txt', 'w', encoding='utf-8') as f:
+        f.write(decrypted)
+
+    print()
+    print(f"Сохранено в {RESULTS_DIR}/decrypted.txt")
+
+
+if __name__ == '__main__':
+    main()
