@@ -18,6 +18,21 @@ def read_json_file(file_path: str) -> dict:
         raise ValueError(f"Ошибка чтения JSON-файла: {file_path}") from error
 
 
+def write_json_file(file_path: str, data: dict) -> None:
+    """
+    Записывает словарь в JSON-файл.
+
+    :param file_path: путь к JSON-файлу
+    :param data: данные для записи
+    :return: None
+    """
+    try:
+        with open(file_path, "w", encoding="utf-8") as file:
+            json.dump(data, file, indent=4, ensure_ascii=False)
+    except OSError as error:
+        raise OSError(f"Ошибка записи JSON-файла: {file_path}") from error
+
+
 def read_binary_file(file_path: str) -> bytes:
     """
     Читает бинарный файл.

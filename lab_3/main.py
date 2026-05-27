@@ -8,12 +8,34 @@ from asymmetric_crypto import (
     save_private_key,
     save_public_key,
 )
-from file_utils import read_binary_file, read_json_file, write_binary_file
+from file_utils import read_binary_file, read_json_file, write_binary_file, write_json_file
 from symmetric_crypto import (
     decrypt_file_camellia,
     encrypt_file_camellia,
     generate_symmetric_key,
 )
+
+
+def request_settings(settings: dict) -> dict:
+    """
+    Запрашивает у пользователя пути к ключам и обновляет настройки.
+
+    :param settings: исходный словарь настроек
+    :return: обновлённый словарь настроек
+    """
+    private = input(f"Путь к приватному ключу [{settings['private_key']}]: ")
+    if private:
+        settings["private_key"] = private
+
+    public = input(f"Путь к публичному ключу [{settings['public_key']}]: ")
+    if public:
+        settings["public_key"] = public
+
+    symmetric = input(f"Путь к симметричному ключу [{settings['symmetric_key']}]: ")
+    if symmetric:
+        settings["symmetric_key"] = symmetric
+
+    return settings
 
 
 def generation_mode(settings: dict) -> None:
@@ -122,6 +144,9 @@ def main() -> None:
         )
         settings_path = args.generation or args.encryption or args.decryption
         settings = read_json_file(settings_path)
+
+        settings = request_settings(settings)
+        write_json_file(settings_path, settings)
 
         if args.private_key is not None:
             settings["private_key"] = args.private_key
